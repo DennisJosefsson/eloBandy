@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@ihs7/ts-elo':
+        specifier: ^2.0.0
+        version: 2.0.0
       zod:
         specifier: ^4.1.11
         version: 4.1.11
@@ -262,6 +265,9 @@ packages:
   '@humanwhocodes/retry@0.4.3':
     resolution: {integrity: sha512-bV0Tgo9K4hfPCek+aMAn81RppFKv2ySDQeMoSZuvTASywNTnVJCArCZE2FWqpvIatKu7VMRLWlR1EazvVhDyhQ==}
     engines: {node: '>=18.18'}
+
+  '@ihs7/ts-elo@2.0.0':
+    resolution: {integrity: sha512-x+nogiAuhh/jlai6wd3vl0yOr6UkaIO0StVkaheqKAbUGqDwoiouZ7kf5CQHa7KcwmvrSx1Y/gE8oPa6UNhXjA==}
 
   '@nodelib/fs.scandir@2.1.5':
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -885,6 +891,8 @@ snapshots:
   '@humanwhocodes/momoa@3.3.9': {}
 
   '@humanwhocodes/retry@0.4.3': {}
+
+  '@ihs7/ts-elo@2.0.0': {}
 
   '@nodelib/fs.scandir@2.1.5':
     dependencies:
