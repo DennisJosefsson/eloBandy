@@ -15,5 +15,5 @@ export const calcElo = (
     score: gameObject.points === 0 ? 2 : gameObject.points === 1 ? 1 : 2,
   }
 
-  return calculateTeamMatch(homeTeam, awayTeam, { kFactor: 32 })
+  return calculateTeamMatch(homeTeam, awayTeam, { kFactor: 20 })
 }

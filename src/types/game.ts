@@ -7,6 +7,10 @@ const gameObject = z.object({
   date: z.string(),
 })
 
-export const gameArray = z.array(gameObject)
+const scheduleObject = gameObject.omit({ points: true })
 
+export const gameArray = z.array(gameObject)
 export type GameObject = z.infer<typeof gameObject>
+
+export const scheduleArray = z.array(scheduleObject)
+export type ScheduleObject = z.infer<typeof scheduleObject>
