@@ -6,6 +6,7 @@ import { calcSeason } from './lib/calcSeason'
 import { getEloData } from './lib/getEloData'
 import { getNewEloObject } from './lib/getNewEloObject'
 import { getSchedule } from './lib/getSchedule'
+import { readJSONFile } from './lib/readFile'
 import { writeELOFile } from './lib/writeFile'
 import { TableRecord } from './types/game'
 
@@ -41,10 +42,13 @@ async function main() {
     }
 
     const t1 = performance.now()
-
+    const teamNamesData = await readJSONFile('./json/team_names.json')
+    const teamNames = z
+      .array(z.object({ casual_name: z.string(), team_id: z.coerce.string() }))
+      .parse(JSON.parse(teamNamesData))
     const sortedTable = Object.entries(table)
       .map(([team, points]) => ({
-        team,
+        team: teamNames.find((t) => t.team_id === team)?.casual_name,
         points: points / rounds,
       }))
       .sort((a, b) => {
@@ -53,8 +57,9 @@ async function main() {
         return 0
       })
     console.log(sortedTable)
+
     console.log(
-      `Call to predict season ${rounds} time(s) took ${(t1 - t0).toFixed(3)} milliseconds.`,
+      `Call to predict season ${rounds} time(s) took ${t1 - t0 > 1000 ? ((t1 - t0) / 1000).toFixed(2) : (t1 - t0).toFixed(2)} ${t1 - t0 > 1000 ? 'seconds' : 'milliseconds'}.`,
     )
   }
 }
