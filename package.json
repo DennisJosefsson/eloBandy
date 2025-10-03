@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "@ihs7/ts-elo": "^2.0.0",
+    "dotenv": "^17.2.3",
     "zod": "^4.1.11"
   }
 }

@@ -1,5 +1,8 @@
 import { calculateTeamMatch } from '@ihs7/ts-elo'
+import { z } from 'zod'
 import { GameObject } from '../types/game'
+
+const kFactor = z.coerce.number().parse(process.env.KFACTOR)
 
 export const calcElo = (
   gameObject: GameObject,
@@ -12,8 +15,8 @@ export const calcElo = (
   }
   const awayTeam = {
     players: [{ id: gameObject.opponent, rating: awayRating }],
-    score: gameObject.points === 0 ? 2 : gameObject.points === 1 ? 1 : 2,
+    score: gameObject.points === 0 ? 2 : gameObject.points === 1 ? 1 : 0,
   }
 
-  return calculateTeamMatch(homeTeam, awayTeam, { kFactor: 20 })
+  return calculateTeamMatch(homeTeam, awayTeam, { kFactor: kFactor })
 }

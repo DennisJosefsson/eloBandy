@@ -1,0 +1,25 @@
+import { ResultArrayRecord } from '../types/numberArray'
+
+export const resultArrayObject: ResultArrayRecord = {
+  '0-119': [...Array(5).fill(2), ...Array(7).fill(1), ...Array(88).fill(0)],
+  '120-169': [...Array(7).fill(2), ...Array(7).fill(1), ...Array(86).fill(0)],
+  '170-219': [...Array(12).fill(2), ...Array(8).fill(1), ...Array(80).fill(0)],
+  '220-259': [...Array(17).fill(2), ...Array(8).fill(1), ...Array(75).fill(0)],
+  '260-299': [...Array(22).fill(2), ...Array(9).fill(1), ...Array(69).fill(0)],
+  '300-339': [...Array(27).fill(2), ...Array(9).fill(1), ...Array(64).fill(0)],
+  '340-379': [...Array(31).fill(2), ...Array(10).fill(1), ...Array(59).fill(0)],
+  '380-419': [...Array(35).fill(2), ...Array(11).fill(1), ...Array(54).fill(0)],
+  '420-459': [...Array(40).fill(2), ...Array(11).fill(1), ...Array(49).fill(0)],
+  '460-489': [...Array(43).fill(2), ...Array(12).fill(1), ...Array(45).fill(0)],
+  '490-509': [...Array(47).fill(2), ...Array(12).fill(1), ...Array(41).fill(0)],
+  '510-539': [...Array(51).fill(2), ...Array(12).fill(1), ...Array(37).fill(0)],
+  '540-579': [...Array(55).fill(2), ...Array(11).fill(1), ...Array(34).fill(0)],
+  '580-619': [...Array(59).fill(2), ...Array(11).fill(1), ...Array(30).fill(0)],
+  '620-659': [...Array(62).fill(2), ...Array(10).fill(1), ...Array(28).fill(0)],
+  '660-699': [...Array(66).fill(2), ...Array(9).fill(1), ...Array(25).fill(0)],
+  '700-739': [...Array(71).fill(2), ...Array(9).fill(1), ...Array(20).fill(0)],
+  '740-779': [...Array(76).fill(2), ...Array(8).fill(1), ...Array(16).fill(0)],
+  '780-829': [...Array(82).fill(2), ...Array(8).fill(1), ...Array(10).fill(0)],
+  '830-879': [...Array(87).fill(2), ...Array(7).fill(1), ...Array(6).fill(0)],
+  '880-1000': [...Array(90).fill(2), ...Array(7).fill(1), ...Array(3).fill(0)],
+}
