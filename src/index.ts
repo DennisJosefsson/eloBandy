@@ -26,15 +26,20 @@ async function main() {
         women = false
       }
     }
+    const men2025EloObject = await getNewEloObject(2025, false, true)
+    await writeELOFile(men2025EloObject, 2025, false)
+
+    const women2025EloObject = await getNewEloObject(2025, true, true)
+    await writeELOFile(women2025EloObject, 2025, true)
 
     console.log('DONE!')
   } else if (process.env.FUNCTION === 'ResultDistribution') {
-    const data = await calcResultDistribution(2025, false)
+    const data = await calcResultDistribution(2026, false)
     console.log(data)
   } else if (process.env.FUNCTION === 'PredictSeason') {
     const t0 = performance.now()
     const table: TableRecord = {}
-    const { eloObject } = await getEloData(2025, false)
+    const { eloObject } = await getEloData(2026, false)
     const schedule = await getSchedule(2025, false)
     for (let i = 1; i < rounds + 1; i++) {
       const newEloObject = JSON.parse(JSON.stringify(eloObject))

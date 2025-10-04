@@ -1,11 +1,17 @@
 import { calcElo } from './calcElo'
-import { getEloData } from './getEloData'
+import { getEloData, getEloWithSCData } from './getEloData'
 import { getGameArray } from './getGameArray'
 
-export const getNewEloObject = async (year: number, women: boolean) => {
-  const { eloObject, min } = await getEloData(year, women)
-  //console.log(eloObject, min)
-  const gameArray = await getGameArray(year, women)
+export const getNewEloObject = async (
+  year: number,
+  women: boolean,
+  sc: boolean = false,
+) => {
+  const { eloObject, min } = sc
+    ? await getEloWithSCData(women)
+    : await getEloData(year, women)
+
+  const gameArray = await getGameArray(year, women, sc)
 
   gameArray.forEach((game) => {
     const newElo = calcElo(

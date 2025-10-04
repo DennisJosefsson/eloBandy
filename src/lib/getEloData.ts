@@ -23,3 +23,20 @@ export const getEloData = async (year: number, women: boolean) => {
   const min = Math.min(...eloArray)
   return { eloObject, min }
 }
+
+export const getEloWithSCData = async (women: boolean) => {
+  let eloObject: EloObject = {}
+
+  const fileName = path.join(
+    EloJSONFilePath,
+    `elo_${women ? 'women' : 'men'}_2024_2025.json`,
+  )
+  const data = await readJSONFile(fileName)
+
+  eloObject = eloRecord.parse(await JSON.parse(data))
+
+  const eloArray = numberArray.parse(Object.values(eloObject))
+
+  const min = Math.min(...eloArray)
+  return { eloObject, min }
+}
