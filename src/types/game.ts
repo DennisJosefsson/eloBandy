@@ -7,6 +7,10 @@ const gameObject = z.object({
   date: z.string(),
 })
 
+export const teamPlacings = z.array(
+  z.object({ team: z.string(), placings: z.array(z.number()) }),
+)
+
 const scheduleObject = gameObject.omit({ points: true })
 
 export const tableRecord = z.record(z.string(), z.number())
@@ -18,3 +22,4 @@ export type GameObject = z.infer<typeof gameObject>
 export type ScheduleArray = z.infer<typeof scheduleArray>
 export type ScheduleObject = z.infer<typeof scheduleObject>
 export type TableRecord = z.infer<typeof tableRecord>
+export type TeamPlacings = z.infer<typeof teamPlacings>

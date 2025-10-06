@@ -8,7 +8,7 @@ import { getNewEloObject } from './lib/getNewEloObject'
 import { getSchedule } from './lib/getSchedule'
 import { readJSONFile } from './lib/readFile'
 import { writeELOFile } from './lib/writeFile'
-import { TableRecord } from './types/game'
+import { TableRecord, TeamPlacings } from './types/game'
 
 let women = false
 
@@ -39,11 +39,12 @@ async function main() {
   } else if (process.env.FUNCTION === 'PredictSeason') {
     const t0 = performance.now()
     const table: TableRecord = {}
+    const teamPlacings: TeamPlacings = []
     const { eloObject } = await getEloData(2026, false)
     const schedule = await getSchedule(2025, false)
     for (let i = 1; i < rounds + 1; i++) {
       const newEloObject = JSON.parse(JSON.stringify(eloObject))
-      calcSeason(schedule, newEloObject, table)
+      calcSeason(schedule, newEloObject, table, teamPlacings)
     }
 
     const t1 = performance.now()
@@ -51,18 +52,32 @@ async function main() {
     const teamNames = z
       .array(z.object({ casual_name: z.string(), team_id: z.coerce.string() }))
       .parse(JSON.parse(teamNamesData))
-    const sortedTable = Object.entries(table)
-      .map(([team, points]) => ({
-        team: teamNames.find((t) => t.team_id === team)?.casual_name,
-        points: points / rounds,
-      }))
+
+    const output = teamPlacings
+      .map((team) => {
+        const points = table[team.team] / rounds
+        const avg = (
+          team.placings.reduce((acc, curr) => acc + curr, 0) / rounds
+        ).toFixed(2)
+        const min = Math.min(...team.placings)
+        const minTimes = team.placings.filter((place) => place === min)?.length
+        const max = Math.max(...team.placings)
+        const maxTimes = team.placings.filter((place) => place === max)?.length
+        const outputString = `Lag:    ${teamNames.find((t) => t.team_id === team.team)?.casual_name} -    Genomsnitt: ${avg}    Poäng: ${points.toFixed(1)} 
+        Högsta placering: ${min}, totalt ${minTimes} gång(er) Lägsta placering: ${max}, totalt ${maxTimes} gång(er).
+        `
+
+        return { points, outputString }
+      })
       .sort((a, b) => {
         if (a.points < b.points) return 1
         if (a.points > b.points) return -1
         return 0
       })
-    console.log(sortedTable)
 
+    output.forEach((team) => {
+      console.info(team.outputString)
+    })
     console.log(
       `Call to predict season ${rounds} time(s) took ${t1 - t0 > 1000 ? ((t1 - t0) / 1000).toFixed(2) : (t1 - t0).toFixed(2)} ${t1 - t0 > 1000 ? 'seconds' : 'milliseconds'}.`,
     )
