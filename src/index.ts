@@ -6,7 +6,9 @@ import { calcSeason } from './lib/calcSeason'
 import { getEloData } from './lib/getEloData'
 import { getNewEloObject } from './lib/getNewEloObject'
 import { getSchedule } from './lib/getSchedule'
+import { parsePromote } from './lib/parsePromote'
 import { readJSONFile } from './lib/readFile'
+import { swedify } from './lib/swedify'
 import { writeELOFile } from './lib/writeFile'
 import { TableRecord, TeamPlacings } from './types/game'
 
@@ -37,11 +39,12 @@ async function main() {
     const data = await calcResultDistribution(2026, false)
     console.log(data)
   } else if (process.env.FUNCTION === 'PredictSeason') {
+    // const women = true
     const t0 = performance.now()
     const table: TableRecord = {}
     const teamPlacings: TeamPlacings = []
-    const { eloObject } = await getEloData(2026, false)
-    const schedule = await getSchedule(2025, false)
+    const { eloObject } = await getEloData(2026, women)
+    const schedule = await getSchedule(2025, women)
     for (let i = 1; i < rounds + 1; i++) {
       const newEloObject = JSON.parse(JSON.stringify(eloObject))
       calcSeason(schedule, newEloObject, table, teamPlacings)
@@ -56,15 +59,13 @@ async function main() {
     const output = teamPlacings
       .map((team) => {
         const points = table[team.team] / rounds
-        const avg = (
-          team.placings.reduce((acc, curr) => acc + curr, 0) / rounds
-        ).toFixed(2)
+        const avg = team.placings.reduce((acc, curr) => acc + curr, 0) / rounds
         const min = Math.min(...team.placings)
         const minTimes = team.placings.filter((place) => place === min)?.length
         const max = Math.max(...team.placings)
         const maxTimes = team.placings.filter((place) => place === max)?.length
-        const outputString = `Lag:    ${teamNames.find((t) => t.team_id === team.team)?.casual_name} -    Genomsnitt: ${avg}    Poäng: ${points.toFixed(1)} 
-        Högsta placering: ${min}, totalt ${minTimes} gång(er) Lägsta placering: ${max}, totalt ${maxTimes} gång(er).
+        const outputString = `Lag:    ${teamNames.find((t) => t.team_id === team.team)?.casual_name}    Snittplacering: ${swedify(avg)}    Snittpoäng: ${swedify(points)} 
+        Högsta placering: ${min}, totalt ${swedify(minTimes)} gång(er).    Lägsta placering: ${max}, totalt ${swedify(maxTimes)} gång(er).
         `
 
         return { points, outputString }
@@ -79,8 +80,11 @@ async function main() {
       console.info(team.outputString)
     })
     console.log(
-      `Call to predict season ${rounds} time(s) took ${t1 - t0 > 1000 ? ((t1 - t0) / 1000).toFixed(2) : (t1 - t0).toFixed(2)} ${t1 - t0 > 1000 ? 'seconds' : 'milliseconds'}.`,
+      `Säsongen förutspåddes ${swedify(rounds)} gång(er) och det tog ${t1 - t0 > 1000 ? swedify((t1 - t0) / 1000) : swedify(t1 - t0)} ${t1 - t0 > 1000 ? 'sekunder' : 'millisekunder'}.`,
     )
+  } else if (process.env.FUNCTION === 'ParsePromoted') {
+    const promoted = await parsePromote()
+    console.log(promoted)
   }
 }
 
