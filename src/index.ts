@@ -64,8 +64,15 @@ async function main() {
         const minTimes = team.placings.filter((place) => place === min)?.length
         const max = Math.max(...team.placings)
         const maxTimes = team.placings.filter((place) => place === max)?.length
-        const outputString = `Lag:    ${teamNames.find((t) => t.team_id === team.team)?.casual_name}    Snittplacering: ${swedify(avg)}    Snittpoäng: ${swedify(points)} 
-        Högsta placering: ${min}, totalt ${swedify(minTimes)} gång(er).    Lägsta placering: ${max}, totalt ${swedify(maxTimes)} gång(er).
+        const teamName = teamNames.find(
+          (t) => t.team_id === team.team,
+        )?.casual_name
+
+        const filler = new Array(
+          19 - (teamName === undefined ? 0 : teamName.length),
+        ).join('\u0020')
+        const outputString = `\x1b[34m${teamName}\x1b[0m${filler}Snittplacering: \x1b[33m${swedify(avg)}\x1b[0m    Snittpoäng: \x1b[33m${swedify(points)}\x1b[0m
+                  Högsta placering: \x1b[33m${min}\x1b[0m, totalt \x1b[33m${swedify(minTimes)}\x1b[0m gång(er).    Lägsta placering: \x1b[33m${max}\x1b[0m, totalt \x1b[33m${swedify(maxTimes)}\x1b[0m gång(er).
         `
 
         return { points, outputString }
@@ -80,7 +87,7 @@ async function main() {
       console.info(team.outputString)
     })
     console.log(
-      `Säsongen förutspåddes ${swedify(rounds)} gång(er) och det tog ${t1 - t0 > 1000 ? swedify((t1 - t0) / 1000) : swedify(t1 - t0)} ${t1 - t0 > 1000 ? 'sekunder' : 'millisekunder'}.`,
+      `Säsongen förutspåddes \x1b[33m${swedify(rounds)}\x1b[0m gång(er) och det tog \x1b[33m${t1 - t0 > 1000 ? swedify((t1 - t0) / 1000) : swedify(t1 - t0)}\x1b[0m ${t1 - t0 > 1000 ? 'sekunder' : 'millisekunder'}.`,
     )
   } else if (process.env.FUNCTION === 'ParsePromoted') {
     const promoted = await parsePromote()
