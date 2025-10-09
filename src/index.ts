@@ -1,5 +1,6 @@
 import 'dotenv/config'
 
+import { styleText } from 'node:util'
 import { z } from 'zod'
 import { calcResultDistribution } from './lib/calcResultDistribution'
 import { calcSeason } from './lib/calcSeason'
@@ -67,12 +68,10 @@ async function main() {
         const teamName = teamNames.find(
           (t) => t.team_id === team.team,
         )?.casual_name
-
-        const filler = new Array(
-          19 - (teamName === undefined ? 0 : teamName.length),
-        ).join('\u0020')
-        const outputString = `\x1b[34m${teamName}\x1b[0m${filler}Snittplacering: \x1b[33m${swedify(avg)}\x1b[0m    Snittpoäng: \x1b[33m${swedify(points)}\x1b[0m
-                  Högsta placering: \x1b[33m${min}\x1b[0m, totalt \x1b[33m${swedify(minTimes)}\x1b[0m gång(er).    Lägsta placering: \x1b[33m${max}\x1b[0m, totalt \x1b[33m${swedify(maxTimes)}\x1b[0m gång(er).
+        if (!teamName) throw new Error('Inget lag, något gick fel')
+        const filler = new Array(19 - teamName.length).join('\u0020')
+        const outputString = `${styleText('blue', teamName)}${filler}Snittplacering: ${styleText('yellow', swedify(avg))}    Snittpoäng: ${styleText('yellow', swedify(points))}
+                  Högsta placering: ${styleText('yellow', min.toString())}, totalt ${styleText('yellow', swedify(minTimes))} gång(er).    Lägsta placering: ${styleText('yellow', max.toString())}, totalt ${styleText('yellow', swedify(maxTimes))} gång(er).
         `
 
         return { points, outputString }
@@ -87,7 +86,7 @@ async function main() {
       console.info(team.outputString)
     })
     console.log(
-      `Säsongen förutspåddes \x1b[33m${swedify(rounds)}\x1b[0m gång(er) och det tog \x1b[33m${t1 - t0 > 1000 ? swedify((t1 - t0) / 1000) : swedify(t1 - t0)}\x1b[0m ${t1 - t0 > 1000 ? 'sekunder' : 'millisekunder'}.`,
+      `Säsongen förutspåddes ${styleText('yellow', swedify(rounds))} gång(er) och det tog ${styleText('yellow', t1 - t0 > 1000 ? swedify((t1 - t0) / 1000) : swedify(t1 - t0))} ${t1 - t0 > 1000 ? 'sekunder' : 'millisekunder'}.`,
     )
   } else if (process.env.FUNCTION === 'ParsePromoted') {
     const promoted = await parsePromote()
